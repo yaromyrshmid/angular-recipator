@@ -1,34 +1,56 @@
 <div class="row">
   <div class="col">
-    <img src="" alt="" class="img-fluid" />
+    <img
+      [src]="recipe.imagePath"
+      alt="{{ recipe.name }}"
+      class="img-fluid"
+      style="max-height: 300px;"
+    />
   </div>
 </div>
 <div class="row">
   <div class="col">
-    <h1>Recipe Name</h1>
+    <h1>{{ recipe.name }}</h1>
   </div>
 </div>
 <div class="row">
   <div class="col">
-    <div class="btn-group">
-      <button class="btn btn-primary dropdown-toggle">
-        Manage Recipe <span class="caret"></span>
+    <div class="dropdown">
+      <button
+        appDropdown
+        class="btn btn-secondary dropdown-toggle"
+        type="button"
+        id="dropdownMenuButton"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        Manage Recipe
       </button>
-      <ul class="dropdown-menu" aria-labelledby="manageDropdown">
-        <li><a href="#">To Shopping List</a></li>
-        <li><a href="#">Edit Recipe</a></li>
-        <li><a href="#">Delete Recipe</a></li>
-      </ul>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a
+          class="dropdown-item"
+          (click)="onAddToShoppingList()"
+          style="cursor: pointer;"
+          >To Shopping List</a
+        >
+        <a class="dropdown-item" href="#">Edit Recipe</a>
+        <a class="dropdown-item" href="#">Delete Recipe</a>
+      </div>
     </div>
   </div>
 </div>
 <div class="row">
   <div class="col">
-    Description
+    {{ recipe.description }}
   </div>
 </div>
 <div class="row">
   <div class="col">
-    Ingredients
+    <ul class="list-group">
+      <li class="list-group-item" *ngFor="let ingredient of recipe.ingredients">
+        {{ ingredient.name }} - {{ ingredient.amount }}
+      </li>
+    </ul>
   </div>
 </div>
