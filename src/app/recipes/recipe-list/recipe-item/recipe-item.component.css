@@ -1,0 +1,9 @@
+.recipe-item {
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+img {
+  height: 70px;
+}

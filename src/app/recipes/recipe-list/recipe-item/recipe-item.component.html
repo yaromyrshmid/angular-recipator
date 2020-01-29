@@ -1,6 +1,5 @@
-<a
-  style="cursor: pointer;"
-  class="list-group-item clearfix"
+<div
+  class="list-group-item clearfix recipe-item"
   [routerLink]="[index]"
   routerLinkActive="active"
 >
@@ -13,7 +12,6 @@
       src="{{ recipe.imagePath }}"
       alt="{{ recipe.name }}"
       class="img-fluid"
-      style="max-height: 50px;"
     />
   </span>
-</a>
+</div>

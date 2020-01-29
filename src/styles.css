@@ -6,3 +6,11 @@ button {
   min-width: 100px;
   margin-right: 1rem;
 }
+
+hr {
+  width: 90%;
+}
+
+.block-wrapper {
+  margin-top: 1rem;
+}
