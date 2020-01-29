@@ -32,8 +32,18 @@
           >Manage
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a style="cursor: pointer;" class="dropdown-item">Save Data</a>
-          <a style="cursor: pointer;" class="dropdown-item">Fetch Data</a>
+          <a
+            style="cursor: pointer;"
+            class="dropdown-item"
+            (click)="onSaveData()"
+            >Save Data</a
+          >
+          <a
+            style="cursor: pointer;"
+            class="dropdown-item"
+            (click)="onFetchData()"
+            >Fetch Data</a
+          >
         </div>
       </li>
     </ul>
