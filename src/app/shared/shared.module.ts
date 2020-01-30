@@ -2,12 +2,11 @@ import { NgModule } from "@angular/core";
 
 import { AlertComponent } from "./alert/alert.component";
 import { SpinnerComponent } from "./spinner/spinner.component";
-import { DropdownDirective } from "./dropdown.directive";
 import { CommonModule } from "@angular/common";
 
 @NgModule({
-  declarations: [AlertComponent, SpinnerComponent, DropdownDirective],
+  declarations: [AlertComponent, SpinnerComponent],
   imports: [CommonModule],
-  exports: [AlertComponent, SpinnerComponent, DropdownDirective, CommonModule]
+  exports: [AlertComponent, SpinnerComponent, CommonModule]
 })
 export class SharedModule {}
