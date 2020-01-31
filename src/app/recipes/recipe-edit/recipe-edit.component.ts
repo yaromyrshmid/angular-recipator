@@ -31,7 +31,6 @@ export class RecipeEditComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.recipeForm);
     if (this.editMode) {
       this.dataStorageService.updateRecipe(this.id, this.recipeForm.value);
     } else {

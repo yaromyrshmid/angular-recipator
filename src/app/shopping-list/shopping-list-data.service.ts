@@ -18,9 +18,7 @@ export class ShoppingListDataService {
     private http: HttpClient,
     private authService: AuthService,
     private slService: ShoppingListService
-  ) {
-    console.log(this.authService.user);
-  }
+  ) {}
 
   fetchSL() {
     return this.http
@@ -90,13 +88,18 @@ export class ShoppingListDataService {
       )
       .pipe(
         map(ingredients => {
-          // Mapping object to array with ids from keys
-          return Object.keys(ingredients).map((key: any) => {
-            return {
-              ...ingredients[key],
-              id: key
-            };
-          });
+          if (ingredients) {
+            // Mapping object to array with ids from keys
+            return Object.keys(ingredients).map((key: any) => {
+              return {
+                ...ingredients[key],
+                id: key
+              };
+            });
+          } else {
+            // Return empty array if user does not have a shopping list
+            return [];
+          }
         })
       )
       .subscribe(
