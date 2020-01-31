@@ -4,13 +4,15 @@ import { HttpClient } from "@angular/common/http";
 
 import { Ingredient } from "../shared/ingredient.model";
 import { ShoppingListService } from "./shopping-list.service";
-import { map } from "rxjs/operators";
+import { map, tap } from "rxjs/operators";
+import { Subject } from "rxjs";
 
 @Injectable({
   providedIn: "root"
 })
 export class ShoppingListDataService {
   userId = this.authService.user.value.id;
+  finishedLoading = new Subject<boolean>();
 
   constructor(
     private http: HttpClient,
@@ -80,6 +82,7 @@ export class ShoppingListDataService {
   }
 
   storeIngredients(ingredientsToAdd) {
+    this.finishedLoading.next(false);
     // Grabing ingredients from server, because they may not be initialized when recipes are loaded
     return this.http
       .get<Ingredient[]>(
@@ -104,6 +107,7 @@ export class ShoppingListDataService {
           ingredientsToAdd.forEach(ingredient => {
             this.storeIngredient(ingredient);
           });
+          this.finishedLoading.next(true);
         },
         error => {
           console.log("error:", error);

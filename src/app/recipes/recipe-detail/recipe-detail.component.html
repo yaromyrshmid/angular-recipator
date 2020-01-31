@@ -50,3 +50,11 @@
     </div>
   </div>
 </div>
+
+<div class="block-wrapper" *ngIf="loadingIngredients">
+  <app-spinner></app-spinner>
+</div>
+
+<div class="block-wrapper" *ngIf="loadedIngredients">
+  <p class="alert alert-success">Ingredients added to shopping list</p>
+</div>
