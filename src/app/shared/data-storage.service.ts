@@ -71,4 +71,18 @@ export class DataStorageService {
         })
       );
   }
+
+  deleteRecipe(id: string) {
+    return this.http
+      .delete(`https://angular-learn-fc6c0.firebaseio.com/recipes/${id}.json`)
+      .subscribe(
+        response => {
+          // Updating recipe in recipe service
+          this.recipeService.deleteRecipe(id);
+        },
+        error => {
+          console.log("error:", error);
+        }
+      );
+  }
 }
