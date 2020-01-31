@@ -46,20 +46,35 @@ export class ShoppingListDataService {
   }
 
   storeIngredient(ingredient) {
-    return this.http
-      .post(
-        `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.userId}.json`,
-        ingredient
-      )
-      .subscribe(
-        (response: { name: string }) => {
-          // Adding ingredient to ingredient service
-          this.slService.addIngredient({ ...ingredient, id: response.name });
-        },
-        error => {
-          console.log("error:", error);
-        }
+    // Check if ingredient with the same name exists
+    const ingredientExists = this.slService
+      .getIngredients()
+      .find(
+        ingredientFromArray => ingredientFromArray.name === ingredient.name
       );
+    // If exists - update this ingredient
+    if (ingredientExists) {
+      this.updateIngredient(ingredientExists.id, {
+        name: ingredient.name,
+        amount: ingredientExists.amount + ingredient.amount
+      });
+      // Else create new ingredient
+    } else {
+      return this.http
+        .post(
+          `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.userId}.json`,
+          ingredient
+        )
+        .subscribe(
+          (response: { name: string }) => {
+            // Adding ingredient to ingredient service
+            this.slService.addIngredient({ ...ingredient, id: response.name });
+          },
+          error => {
+            console.log("error:", error);
+          }
+        );
+    }
   }
 
   updateIngredient(id: string, ingredient: { name: string; amount: number }) {
@@ -82,7 +97,7 @@ export class ShoppingListDataService {
   deleteIngredient(id: string) {
     return this.http
       .delete(
-        `https://angular-learn-fc6c0.firebaseio.com/recipes/${this.userId}/${id}.json`
+        `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.userId}/${id}.json`
       )
       .subscribe(
         response => {
