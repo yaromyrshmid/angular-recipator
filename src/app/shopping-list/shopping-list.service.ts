@@ -6,10 +6,25 @@ export class ShoppingListService {
   ingredientsChanged = new Subject<Ingredient[]>();
   startedEditing = new Subject<number>();
 
-  private ingredients: Ingredient[] = [
-    new Ingredient("Apple", 5),
-    new Ingredient("Tomato", 15)
-  ];
+  private ingredients: Ingredient[] = [];
+
+  setIngredients(newIngredients) {
+    // If user has ingredients creating new array of Ingredient instances
+    if (newIngredients) {
+      this.ingredients = newIngredients.map(ingredient => {
+        return new Ingredient(
+          ingredient.name,
+          ingredient.amount,
+          ingredient.id
+        );
+      });
+    } else {
+      // Setting empty array if user has no ingredients
+      this.ingredients = [];
+    }
+    // Passing a copy of ingredients
+    this.ingredientsChanged.next(this.ingredients.slice());
+  }
 
   getIngredients() {
     return this.ingredients.slice();
@@ -19,8 +34,10 @@ export class ShoppingListService {
     return this.ingredients[index];
   }
 
-  addIngredient(ingredient: Ingredient) {
-    this.ingredients.push(ingredient);
+  addIngredient(ingredient) {
+    this.ingredients.push(
+      new Ingredient(ingredient.name, ingredient.amount, ingredient.id)
+    );
     this.ingredientsChanged.next(this.ingredients.slice());
   }
 
