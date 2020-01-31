@@ -26,7 +26,7 @@ export class RecipeService {
 
   getRecipe(id: string) {
     // Returning recipe by id property
-    return this.recipes.find(recipe => recipe.id == id);
+    return this.recipes.find(recipe => recipe.id === id);
   }
 
   addIngredientsToShoppingList(ingredients: Ingredient[]) {
@@ -38,8 +38,14 @@ export class RecipeService {
     this.recipesChanged.next(this.recipes.slice());
   }
 
-  updateRecipe(index: number, newRecipe: Recipe) {
-    this.recipes[index] = newRecipe;
+  updateRecipe(id: string, newRecipe) {
+    // Finding by id the index of the element to replace
+    const index: number = this.recipes.findIndex(recipe => {
+      return recipe.id === id;
+    });
+    // Replacing element with new one at given index, passing the id as response doesn't have one
+    this.recipes[index] = { ...newRecipe, id: id };
+    // Returning the copy of a new array
     this.recipesChanged.next(this.recipes.slice());
   }
 

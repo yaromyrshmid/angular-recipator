@@ -11,7 +11,7 @@ import { DataStorageService } from "src/app/shared/data-storage.service";
   styleUrls: ["./recipe-edit.component.css"]
 })
 export class RecipeEditComponent implements OnInit {
-  id: number;
+  id: string;
   editMode = false;
   recipeForm: FormGroup;
 
@@ -24,7 +24,7 @@ export class RecipeEditComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
-      this.id = +params["id"];
+      this.id = params["id"];
       this.editMode = params["id"] != null;
       this.initForm();
     });
@@ -33,7 +33,7 @@ export class RecipeEditComponent implements OnInit {
   onSubmit() {
     console.log(this.recipeForm);
     if (this.editMode) {
-      this.recipeService.updateRecipe(this.id, this.recipeForm.value);
+      this.dataStorageService.updateRecipe(this.id, this.recipeForm.value);
     } else {
       this.dataStorageService.storeRecipe(this.recipeForm.value);
     }

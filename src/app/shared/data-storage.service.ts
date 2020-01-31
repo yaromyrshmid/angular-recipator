@@ -23,9 +23,25 @@ export class DataStorageService {
       .post("https://angular-learn-fc6c0.firebaseio.com/recipes.json", recipe)
       .subscribe(
         (response: { name: string }) => {
-          console.log(response);
-          // Adding recipe to recipe model
+          // Adding recipe to recipe service
           this.recipeService.addRecipe({ ...recipe, id: response.name });
+        },
+        error => {
+          console.log("error:", error);
+        }
+      );
+  }
+
+  updateRecipe(id: string, recipe) {
+    return this.http
+      .put(
+        `https://angular-learn-fc6c0.firebaseio.com/recipes/${id}.json`,
+        recipe
+      )
+      .subscribe(
+        response => {
+          // Updating recipe in recipe service
+          this.recipeService.updateRecipe(id, response);
         },
         error => {
           console.log("error:", error);
