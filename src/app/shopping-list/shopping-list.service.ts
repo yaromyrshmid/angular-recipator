@@ -46,12 +46,26 @@ export class ShoppingListService {
     this.ingredientsChanged.next(this.ingredients.slice());
   }
 
-  updateIngredient(index: number, newIngredient: Ingredient) {
-    this.ingredients[index] = newIngredient;
+  updateIngredient(
+    id: string,
+    newIngredient: { name: string; amount: number }
+  ) {
+    // Finding by id the index of the element to replace
+    const index: number = this.ingredients.findIndex(
+      ingredient => ingredient.id === id
+    );
+    // Replacing element with new one at given index, passing the id as response doesn't have one
+    this.ingredients[index] = { ...newIngredient, id: id };
+    // Returning the copy of a new array
     this.ingredientsChanged.next(this.ingredients.slice());
   }
 
-  deleteIngredient(index: number) {
+  deleteIngredient(id: string) {
+    // Finding by id the index of the element to delete
+    const index: number = this.ingredients.findIndex(ingredient => {
+      return ingredient.id === id;
+    });
+    // Deleting element
     this.ingredients.splice(index, 1);
     this.ingredientsChanged.next(this.ingredients.slice());
   }

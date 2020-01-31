@@ -61,4 +61,37 @@ export class ShoppingListDataService {
         }
       );
   }
+
+  updateIngredient(id: string, ingredient: { name: string; amount: number }) {
+    return this.http
+      .put(
+        `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.userId}/${id}.json`,
+        ingredient
+      )
+      .subscribe(
+        (response: { name: string; amount: number }) => {
+          // Update ingredient in ingredient service
+          this.slService.updateIngredient(id, response);
+        },
+        error => {
+          console.log("error:", error);
+        }
+      );
+  }
+
+  deleteIngredient(id: string) {
+    return this.http
+      .delete(
+        `https://angular-learn-fc6c0.firebaseio.com/recipes/${this.userId}/${id}.json`
+      )
+      .subscribe(
+        response => {
+          // Deleting ingredient in ingredient service
+          this.slService.deleteIngredient(id);
+        },
+        error => {
+          console.log("error:", error);
+        }
+      );
+  }
 }
