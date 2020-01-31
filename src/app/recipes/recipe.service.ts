@@ -4,15 +4,16 @@ import { Recipe } from "./recipe.model";
 import { Subject } from "rxjs";
 
 import { Ingredient } from "../shared/ingredient.model";
-import { ShoppingListService } from "../shopping-list/shopping-list.service";
+import { ShoppingListDataService } from "../shopping-list/shopping-list-data.service";
 
-@Injectable()
+@Injectable({ providedIn: "root" })
 export class RecipeService {
   recipesChanged = new Subject<Recipe[]>();
 
   private recipes: Recipe[] = [];
 
-  constructor(private slService: ShoppingListService) {}
+  constructor() // private slDataService: ShoppingListDataService
+  {}
 
   setRecipes(recipes: Recipe[]) {
     this.recipes = recipes;
@@ -30,7 +31,7 @@ export class RecipeService {
   }
 
   addIngredientsToShoppingList(ingredients: Ingredient[]) {
-    this.slService.addIngredients(ingredients);
+    // this.slDataService.storeIngredients(ingredients);
   }
 
   addRecipe(recipe: Recipe) {

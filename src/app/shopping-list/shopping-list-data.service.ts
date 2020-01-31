@@ -16,7 +16,9 @@ export class ShoppingListDataService {
     private http: HttpClient,
     private authService: AuthService,
     private slService: ShoppingListService
-  ) {}
+  ) {
+    console.log(this.authService.user);
+  }
 
   fetchSL() {
     return this.http
@@ -75,6 +77,38 @@ export class ShoppingListDataService {
           }
         );
     }
+  }
+
+  storeIngredients(ingredientsToAdd) {
+    // Grabing ingredients from server, because they may not be initialized when recipes are loaded
+    return this.http
+      .get<Ingredient[]>(
+        `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.userId}.json`
+      )
+      .pipe(
+        map(ingredients => {
+          // Mapping object to array with ids from keys
+          return Object.keys(ingredients).map((key: any) => {
+            return {
+              ...ingredients[key],
+              id: key
+            };
+          });
+        })
+      )
+      .subscribe(
+        response => {
+          // Setting ingredients in shopping-list service
+          this.slService.setIngredients(response);
+          // Posting each ingredient
+          ingredientsToAdd.forEach(ingredient => {
+            this.storeIngredient(ingredient);
+          });
+        },
+        error => {
+          console.log("error:", error);
+        }
+      );
   }
 
   updateIngredient(id: string, ingredient: { name: string; amount: number }) {

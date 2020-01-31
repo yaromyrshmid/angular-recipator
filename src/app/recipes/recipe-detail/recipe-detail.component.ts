@@ -4,6 +4,7 @@ import { ActivatedRoute, Params, Router } from "@angular/router";
 
 import { RecipeService } from "../recipe.service";
 import { DataStorageService } from "src/app/shared/data-storage.service";
+import { ShoppingListDataService } from "src/app/shopping-list/shopping-list-data.service";
 
 @Component({
   selector: "app-recipe-detail",
@@ -18,7 +19,8 @@ export class RecipeDetailComponent implements OnInit {
     private recipeService: RecipeService,
     private route: ActivatedRoute,
     private router: Router,
-    private dataService: DataStorageService
+    private dataService: DataStorageService,
+    private slDataService: ShoppingListDataService
   ) {}
 
   ngOnInit() {
@@ -32,7 +34,8 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   onAddToShoppingList() {
-    this.recipeService.addIngredientsToShoppingList(this.recipe.ingredients);
+    this.slDataService.storeIngredients(this.recipe.ingredients);
+    // this.recipeService.addIngredientsToShoppingList(this.recipe.ingredients);
   }
 
   onEditRecipe() {
