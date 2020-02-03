@@ -8,5 +8,14 @@
       *ngFor="let recipeEl of recipes"
       [recipe]="recipeEl"
     ></app-recipe-item>
+    <h3 *ngIf="recipes.length == 0">
+      There are no recipes yet.
+    </h3>
+    <app-alert
+      [message]="error"
+      *ngIf="error"
+      (close)="onHandleError()"
+    ></app-alert>
+    <app-spinner *ngIf="isLoading"></app-spinner>
   </div>
 </div>

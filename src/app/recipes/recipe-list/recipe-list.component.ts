@@ -14,6 +14,8 @@ import { DataStorageService } from "src/app/shared/data-storage.service";
 export class RecipeListComponent implements OnInit, OnDestroy {
   recipes: Recipe[];
   subscription: Subscription;
+  error: string = null;
+  isLoading = false;
 
   constructor(
     private recipeService: RecipeService,
@@ -31,7 +33,18 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     this.recipes = this.recipeService.getRecipes();
     // Fetching recipes on recipes-list load
     if (this.recipes.length == 0) {
-      this.dataStorageService.fetchRecipes().subscribe();
+      // Setting loading to true
+      this.isLoading = true;
+      // Fetching recipes
+      this.dataStorageService.fetchRecipes().subscribe(
+        () => {
+          // Setting loading to false
+          this.isLoading = false;
+        },
+        error => {
+          this.error = error.message ? error.message : "Unknown error occured";
+        }
+      );
     }
   }
 
@@ -41,5 +54,10 @@ export class RecipeListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+  }
+
+  onHandleError() {
+    this.error = null;
+    this.isLoading = false;
   }
 }
