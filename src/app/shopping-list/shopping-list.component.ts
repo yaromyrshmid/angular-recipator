@@ -12,6 +12,9 @@ import { ShoppingListDataService } from "./shopping-list-data.service";
 export class ShoppingListComponent implements OnInit, OnDestroy {
   ingredients: Ingredient[];
   private igChangeSub: Subscription;
+  private slErrorSub: Subscription;
+  error: string = null;
+  isLoading = false;
 
   constructor(
     private slService: ShoppingListService,
@@ -19,13 +22,22 @@ export class ShoppingListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.isLoading = true;
+    // Triggering fetch ingredients
     this.slDataService.fetchSL();
+    // Getting ingredients from slService
     this.ingredients = this.slService.getIngredients();
+    // Subscribing to change of ingredients
     this.igChangeSub = this.slService.ingredientsChanged.subscribe(
       (ingredients: Ingredient[]) => {
         this.ingredients = ingredients;
+        this.isLoading = false;
       }
     );
+    // Subscrubing to errors of slDataService to d=isplay alert when error occures
+    this.slErrorSub = this.slDataService.gotError.subscribe((error: string) => {
+      this.error = error;
+    });
   }
 
   onEditItem(index: number) {
@@ -34,5 +46,11 @@ export class ShoppingListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.igChangeSub.unsubscribe();
+    this.slErrorSub.unsubscribe();
+  }
+
+  onHandleError() {
+    this.error = null;
+    this.isLoading = false;
   }
 }

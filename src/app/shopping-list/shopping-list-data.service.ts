@@ -13,6 +13,7 @@ import { Subject } from "rxjs";
 export class ShoppingListDataService {
   userId = this.authService.user.value.id;
   finishedLoading = new Subject<boolean>();
+  gotError = new Subject<string>();
 
   constructor(
     private http: HttpClient,
@@ -27,13 +28,18 @@ export class ShoppingListDataService {
       )
       .pipe(
         map(ingredients => {
-          // Mapping object to array with ids from keys
-          return Object.keys(ingredients).map((key: any) => {
-            return {
-              ...ingredients[key],
-              id: key
-            };
-          });
+          if (ingredients) {
+            // Mapping object to array with ids from keys
+            return Object.keys(ingredients).map((key: any) => {
+              return {
+                ...ingredients[key],
+                id: key
+              };
+            });
+          } else {
+            // Return empty array if user does not have a shopping list
+            return [];
+          }
         })
       )
       .subscribe(
@@ -42,7 +48,9 @@ export class ShoppingListDataService {
           this.slService.setIngredients(response);
         },
         error => {
-          console.log("error:", error);
+          this.gotError.next(
+            error.message ? error.message : "Unknown error occured"
+          );
         }
       );
   }
@@ -73,7 +81,9 @@ export class ShoppingListDataService {
             this.slService.addIngredient({ ...ingredient, id: response.name });
           },
           error => {
-            console.log("error:", error);
+            this.gotError.next(
+              error.message ? error.message : "Unknown error occured"
+            );
           }
         );
     }
@@ -113,7 +123,9 @@ export class ShoppingListDataService {
           this.finishedLoading.next(true);
         },
         error => {
-          console.log("error:", error);
+          this.gotError.next(
+            error.message ? error.message : "Unknown error occured"
+          );
         }
       );
   }
@@ -130,7 +142,9 @@ export class ShoppingListDataService {
           this.slService.updateIngredient(id, response);
         },
         error => {
-          console.log("error:", error);
+          this.gotError.next(
+            error.message ? error.message : "Unknown error occured"
+          );
         }
       );
   }
@@ -146,7 +160,9 @@ export class ShoppingListDataService {
           this.slService.deleteIngredient(id);
         },
         error => {
-          console.log("error:", error);
+          this.gotError.next(
+            error.message ? error.message : "Unknown error occured"
+          );
         }
       );
   }

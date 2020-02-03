@@ -2,6 +2,12 @@
   <div class="col-10">
     <app-shopping-edit></app-shopping-edit>
     <hr />
+    <app-alert
+      [message]="error"
+      *ngIf="error"
+      (close)="onHandleError()"
+    ></app-alert>
+    <app-spinner *ngIf="isLoading"></app-spinner>
     <ul class="list-group">
       <a
         style="cursor: pointer"
@@ -11,5 +17,6 @@
         >{{ ingredient.name }} ({{ ingredient.amount }})</a
       >
     </ul>
+    <h3 *ngIf="ingredients.length == 0">There are no ingredients yet</h3>
   </div>
 </div>
