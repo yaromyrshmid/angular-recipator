@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { AuthService } from "../auth/auth.service";
 import { HttpClient } from "@angular/common/http";
+import { Subscription, VirtualTimeScheduler } from "rxjs";
 
 import { Ingredient } from "../shared/ingredient.model";
 import { ShoppingListService } from "./shopping-list.service";
@@ -11,7 +12,6 @@ import { Subject } from "rxjs";
   providedIn: "root"
 })
 export class ShoppingListDataService {
-  userId = this.authService.user.value.id;
   finishedLoading = new Subject<boolean>();
   gotError = new Subject<string>();
 
@@ -24,7 +24,7 @@ export class ShoppingListDataService {
   fetchSL() {
     return this.http
       .get<Ingredient[]>(
-        `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.userId}.json`
+        `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.authService.user.value.id}.json`
       )
       .pipe(
         map(ingredients => {
@@ -72,7 +72,7 @@ export class ShoppingListDataService {
     } else {
       return this.http
         .post(
-          `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.userId}.json`,
+          `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.authService.user.value.id}.json`,
           ingredient
         )
         .subscribe(
@@ -94,7 +94,7 @@ export class ShoppingListDataService {
     // Grabing ingredients from server, because they may not be initialized when recipes are loaded
     return this.http
       .get<Ingredient[]>(
-        `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.userId}.json`
+        `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.authService.user.value.id}.json`
       )
       .pipe(
         map(ingredients => {
@@ -133,7 +133,7 @@ export class ShoppingListDataService {
   updateIngredient(id: string, ingredient: { name: string; amount: number }) {
     return this.http
       .put(
-        `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.userId}/${id}.json`,
+        `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.authService.user.value.id}/${id}.json`,
         ingredient
       )
       .subscribe(
@@ -152,7 +152,7 @@ export class ShoppingListDataService {
   deleteIngredient(id: string) {
     return this.http
       .delete(
-        `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.userId}/${id}.json`
+        `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.authService.user.value.id}/${id}.json`
       )
       .subscribe(
         response => {

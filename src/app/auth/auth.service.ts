@@ -6,6 +6,7 @@ import { environment } from "../../environments/environment";
 
 import { User } from "./user.model";
 import { Router } from "@angular/router";
+import { ShoppingListService } from "../shopping-list/shopping-list.service";
 
 export interface AuthResponseData {
   idToken: string;
@@ -24,7 +25,11 @@ export class AuthService {
   user = new BehaviorSubject<User>(null);
   private tokenExpirationTimer: any;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private slService: ShoppingListService
+  ) {}
 
   signup(email: string, password: string) {
     return this.http
@@ -99,6 +104,7 @@ export class AuthService {
       clearTimeout(this.tokenExpirationTimer);
     }
     this.tokenExpirationTimer = null;
+    this.slService.resetIngredientsOnLogout();
   }
 
   autoLogout(expirationDuration: number) {
