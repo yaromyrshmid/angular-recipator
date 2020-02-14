@@ -1,53 +1,35 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { Ingredient } from "../shared/ingredient.model";
-import { ShoppingListService } from "./shopping-list.service";
-import { Subscription } from "rxjs";
-import { ShoppingListDataService } from "./shopping-list-data.service";
-import { AuthService } from "../auth/auth.service";
+
+import { Store } from "@ngrx/store";
+
+import * as ShoppingListActions from "../store/actions/shopping-list.actions";
+import * as fromApp from "../store/reducers/app.reducer";
 
 @Component({
   selector: "app-shopping-list",
   templateUrl: "./shopping-list.component.html",
   styleUrls: ["./shopping-list.component.css"]
 })
-export class ShoppingListComponent implements OnInit, OnDestroy {
+export class ShoppingListComponent implements OnInit {
   ingredients: Ingredient[];
-  private igChangeSub: Subscription;
-  private slErrorSub: Subscription;
+  userId: string = null;
   error: string = null;
   isLoading = false;
 
-  constructor(
-    private slService: ShoppingListService,
-    private slDataService: ShoppingListDataService
-  ) {}
+  constructor(private store: Store<fromApp.AppState>) {}
 
   ngOnInit() {
-    this.isLoading = true;
-    // Triggering fetch ingredients
-    this.slDataService.fetchSL();
-    // Getting ingredients from slService
-    this.ingredients = this.slService.getIngredients();
-    // Subscribing to change of ingredients
-    this.igChangeSub = this.slService.ingredientsChanged.subscribe(
-      (ingredients: Ingredient[]) => {
-        this.ingredients = ingredients;
-        this.isLoading = false;
-      }
-    );
-    // Subscrubing to errors of slDataService to d=isplay alert when error occures
-    this.slErrorSub = this.slDataService.gotError.subscribe((error: string) => {
-      this.error = error;
+    this.store.select("shoppingList").subscribe(slState => {
+      this.ingredients = slState.ingredients;
+      this.isLoading = slState.loading;
+      this.error = slState.ingredientsError;
     });
+    this.store.dispatch(new ShoppingListActions.GetIngredientsStart());
   }
 
-  onEditItem(index: number) {
-    this.slService.startedEditing.next(index);
-  }
-
-  ngOnDestroy() {
-    this.igChangeSub.unsubscribe();
-    this.slErrorSub.unsubscribe();
+  onEditItem(id: string) {
+    this.store.dispatch(new ShoppingListActions.StartEdit(id));
   }
 
   onHandleError() {

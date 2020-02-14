@@ -2,50 +2,51 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 import { Recipe } from "../recipe.model";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 
-import { RecipeService } from "../recipe.service";
-import { DataStorageService } from "src/app/shared/data-storage.service";
-import { ShoppingListDataService } from "src/app/shopping-list/shopping-list-data.service";
-import { Subscription } from "rxjs";
+import { Store } from "@ngrx/store";
+import * as ShoppingListActions from "../../store/actions/shopping-list.actions";
+import * as RecipesActions from "../../store/actions/recipe.actions";
+import * as fromApp from "../../store/reducers/app.reducer";
+import { map } from "rxjs/operators";
 
 @Component({
   selector: "app-recipe-detail",
   templateUrl: "./recipe-detail.component.html",
   styleUrls: ["./recipe-detail.component.css"]
 })
-export class RecipeDetailComponent implements OnInit, OnDestroy {
+export class RecipeDetailComponent implements OnInit {
   recipe: Recipe;
   id: string;
   loadingIngredients = false;
   loadedIngredients = false;
 
-  private loadingSubscription: Subscription;
-
   constructor(
-    private recipeService: RecipeService,
     private route: ActivatedRoute,
     private router: Router,
-    private dataService: DataStorageService,
-    private slDataService: ShoppingListDataService
+    private store: Store<fromApp.AppState>
   ) {}
 
   ngOnInit() {
-    // Getting recipe from service based on id from params
     this.route.params.subscribe((params: Params) => {
       this.id = params["id"];
-      this.recipe = this.recipeService.getRecipe(this.id);
-      // Reseting loaded ingredients on change
-      this.loadedIngredients = false;
+      this.store
+        .select("recipes")
+        .pipe(
+          map(recipesState => {
+            return recipesState.recipes.find(recipe => recipe.id === this.id);
+          })
+        )
+        .subscribe(recipe => {
+          this.recipe = recipe;
+          this.loadedIngredients = false;
+        });
     });
-    this.loadingSubscription = this.slDataService.finishedLoading.subscribe(
-      (result: boolean) => {
-        this.loadingIngredients = !result;
-        this.loadedIngredients = result;
-      }
-    );
   }
 
   onAddToShoppingList() {
-    this.slDataService.storeIngredients(this.recipe.ingredients);
+    this.store.dispatch(
+      new ShoppingListActions.AddIngredientsStart(this.recipe.ingredients)
+    );
+    this.loadedIngredients = true;
   }
 
   onEditRecipe() {
@@ -53,11 +54,7 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
   }
 
   onDeleteRecipe() {
-    this.dataService.deleteRecipe(this.id);
+    this.store.dispatch(new RecipesActions.DeleteRecipeStart(this.id));
     this.router.navigate(["/recipes"]);
-  }
-
-  ngOnDestroy() {
-    this.loadingSubscription.unsubscribe();
   }
 }

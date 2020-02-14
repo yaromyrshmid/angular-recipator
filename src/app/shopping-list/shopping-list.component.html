@@ -9,14 +9,17 @@
     ></app-alert>
     <app-spinner *ngIf="isLoading"></app-spinner>
     <ul class="list-group">
+      <!-- prettier-ignore-attribute -->
       <a
         style="cursor: pointer"
         class="list-group-item"
-        *ngFor="let ingredient of ingredients; let i = index"
-        (click)="onEditItem(i)"
+        *ngFor="let ingredient of ingredients; let i = index;"
+        (click)="onEditItem(ingredient.id)"
         >{{ ingredient.name }} ({{ ingredient.amount }})</a
       >
     </ul>
-    <h3 *ngIf="ingredients.length == 0">There are no ingredients yet</h3>
+    <h3 *ngIf="ingredients.length == 0">
+      There are no ingredients yet
+    </h3>
   </div>
 </div>

@@ -24,7 +24,8 @@ export class ShoppingListDataService {
   fetchSL() {
     return this.http
       .get<Ingredient[]>(
-        `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.authService.user.value.id}.json`
+        // `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.authService.user.value.id}.json`
+        ""
       )
       .pipe(
         map(ingredients => {
@@ -70,22 +71,22 @@ export class ShoppingListDataService {
       });
       // Else create new ingredient
     } else {
-      return this.http
-        .post(
-          `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.authService.user.value.id}.json`,
-          ingredient
-        )
-        .subscribe(
-          (response: { name: string }) => {
-            // Adding ingredient to ingredient service
-            this.slService.addIngredient({ ...ingredient, id: response.name });
-          },
-          error => {
-            this.gotError.next(
-              error.message ? error.message : "Unknown error occured"
-            );
-          }
-        );
+      // return this.http
+      //   .post(
+      //     `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.authService.user.value.id}.json`,
+      //     ingredient
+      //   )
+      //   .subscribe(
+      //     (response: { name: string }) => {
+      //       // Adding ingredient to ingredient service
+      //       this.slService.addIngredient({ ...ingredient, id: response.name });
+      //     },
+      //     error => {
+      //       this.gotError.next(
+      //         error.message ? error.message : "Unknown error occured"
+      //       );
+      //     }
+      //   );
     }
   }
 
@@ -131,39 +132,39 @@ export class ShoppingListDataService {
   }
 
   updateIngredient(id: string, ingredient: { name: string; amount: number }) {
-    return this.http
-      .put(
-        `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.authService.user.value.id}/${id}.json`,
-        ingredient
-      )
-      .subscribe(
-        (response: { name: string; amount: number }) => {
-          // Update ingredient in ingredient service
-          this.slService.updateIngredient(id, response);
-        },
-        error => {
-          this.gotError.next(
-            error.message ? error.message : "Unknown error occured"
-          );
-        }
-      );
+    // return this.http
+    //   .put(
+    //     `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.authService.user.value.id}/${id}.json`,
+    //     ingredient
+    //   )
+    //   .subscribe(
+    //     (response: { name: string; amount: number }) => {
+    //       // Update ingredient in ingredient service
+    //       this.slService.updateIngredient(id, response);
+    //     },
+    //     error => {
+    //       this.gotError.next(
+    //         error.message ? error.message : "Unknown error occured"
+    //       );
+    //     }
+    //   );
   }
 
   deleteIngredient(id: string) {
-    return this.http
-      .delete(
-        `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.authService.user.value.id}/${id}.json`
-      )
-      .subscribe(
-        response => {
-          // Deleting ingredient in ingredient service
-          this.slService.deleteIngredient(id);
-        },
-        error => {
-          this.gotError.next(
-            error.message ? error.message : "Unknown error occured"
-          );
-        }
-      );
+    //   return this.http
+    //     .delete(
+    //       `https://angular-learn-fc6c0.firebaseio.com/shopping-list/${this.authService.user.value.id}/${id}.json`
+    //     )
+    //     .subscribe(
+    //       response => {
+    //         // Deleting ingredient in ingredient service
+    //         this.slService.deleteIngredient(id);
+    //       },
+    //       error => {
+    //         this.gotError.next(
+    //           error.message ? error.message : "Unknown error occured"
+    //         );
+    //       }
+    //     );
   }
 }

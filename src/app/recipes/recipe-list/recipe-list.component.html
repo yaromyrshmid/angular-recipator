@@ -8,7 +8,7 @@
       *ngFor="let recipeEl of recipes"
       [recipe]="recipeEl"
     ></app-recipe-item>
-    <h3 *ngIf="recipes.length == 0">
+    <h3 *ngIf="recipes.length == 0 && !isLoading">
       There are no recipes yet.
     </h3>
     <app-alert
